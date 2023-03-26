@@ -2,20 +2,17 @@ from dotenv import load_dotenv
 import requests
 import os
 from datetime import datetime
-from requests.auth import HTTPBasicAuth
 load_dotenv()
 
 url = "https://trackapi.nutritionix.com"
 APPLICATION_ID = os.getenv("APPLICATION_ID")
 APPLICATION_API = os.getenv("APPLICATION_API")
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
+# USERNAME = os.getenv("USERNAME")
+# PASSWORD = os.getenv("PASSWORD")
 TOKEN = os.getenv("TOKEN")
 ENDPOINT_SHEETY = os.getenv("ENDPOINT_SHEETY")
 
-authintication = HTTPBasicAuth(USERNAME, PASSWORD)
 
-print(USERNAME, PASSWORD)
 query_input_text = input("Tell me which exercises you did: ")
 
 headers ={
@@ -39,7 +36,6 @@ response = requests.post(url=endpoint, json=parameters, headers=headers)
 result = response.json()
 
 print(response)
-# print(result)
 
 today = datetime.now()
 
@@ -60,9 +56,13 @@ for output in result['exercises']:
     parameters_sheety = {
             "workout": new_record
     }
+    
+    bearer_headers = {
+        "Authorization": f"Bearer {TOKEN}"
+    }
     response_sheety = requests.post(url=ENDPOINT_SHEETY,
                                     json=parameters_sheety,
-                                    auth=authintication
+                                    headers=bearer_headers,
                                 )
     result_sheety = response_sheety.json()
     print(result_sheety)
